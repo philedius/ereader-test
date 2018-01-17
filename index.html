@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        #area {
+            width: 1200px;
+            height: 600px;
+            margin: 0 auto;
+            /* border: 1px solid #eee; */
+            padding: 1rem;
+            border-radius: 3px;
+            font-family: sans-serif;
+        }
+
+        .page-flipper {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            text-align: center;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        
+
+        p:hover {
+            background-color: gray;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>epub testaroni</title>
+</head>
+
+<body>
+    <div class="page-flipper" onclick="Book.prevPage();">‹</div>
+    <div class="page-flipper" onclick="Book.nextPage();">›</div>
+    <div id="area"></div>
+
+    <script src="epub.min.js"></script>
+    <script src="zip.min.js"></script>
+    <script src="findAndReplaceDOMText.js"></script>
+
+    <script>
+        var Book = ePub("republic.epub", {
+            spreads: false
+        });
+        Book.renderTo("area");
+
+        Book.on("renderer:chapterDisplayed", function (cfirange) {
+            console.log(Book.renderer.render.getDocumentElement());
+            var head = Book.renderer.render.getDocumentElement().getElementsByTagName('head')[0];
+            var link = document.createElement('link');
+            link.href = '/css/style.css';
+            link.type = 'text/css';
+            link.rel = 'stylesheet';
+            head.appendChild(link);
+            var bookDocument = Book.renderer.render.getDocumentElement();
+            findAndReplaceDOMText(bookDocument, {
+                preset: 'prose',
+                find: /q/g,
+                wrap: 'span',
+                wrapClass: 'blue'
+            });
+
+            findAndReplaceDOMText(bookDocument, {
+                preset: 'prose',
+                find: /p/g,
+                wrap: 'span',
+                wrapClass: 'orange'
+            });
+
+            findAndReplaceDOMText(bookDocument, {
+                preset: 'prose',
+                find: /b/g,
+                wrap: 'span',
+                wrapClass: 'red'
+            });
+
+            findAndReplaceDOMText(bookDocument, {
+                preset: 'prose',
+                find: /d/g,
+                wrap: 'span',
+                wrapClass: 'green'
+            });
+        });
+
+    </script>
+
+    <style>
+        .shiny {
+            color: yellow;
+        }
+    </style>
+</body>
+</html>
