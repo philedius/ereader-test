@@ -3,33 +3,70 @@
 
 <head>
     <style>
+        body {
+            height: 90vh;
+            background-color: #f7f3ee;
+            padding: 0;
+            margin: 0;            
+        }
+
         #area {
-            width: 1200px;
-            height: 600px;
+            /* width: 95%; */
+            height: 95%;
             margin: 0 auto;
             /* border: 1px solid #eee; */
             padding: 1rem;
-            border-radius: 3px;
+            border-radius: 1rem;
             font-family: sans-serif;
         }
 
-        .page-flipper {
+        .button {
             display: inline-block;
-            width: 40px;
+            /* width: 40px; */
             height: 40px;
+            padding: 0 1rem;
             font-size: 30px;
             text-align: center;
-            background-color: #333;
+            background-color: rgb(201, 201, 201);
             color: white;
             cursor: pointer;
             user-select: none;
+            z-index: 1000;
         }
 
+        .page-buttons {
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            color: rgba(150,150,100,0.3);
+        }
         
-
-        p:hover {
-            background-color: gray;
+        .page-button {
+            display: flex;
+            font-size: 100px;
+            width: 350px;
+            text-align: center;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: pointer;
         }
+
+        #prev-button {
+            background: linear-gradient(to left, transparent, rgba(71, 65, 8, 0.2));
+        }
+
+        #next-button {
+            background: linear-gradient(to right, transparent, rgba(71, 65, 8, 0.2));
+        }
+
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,19 +75,71 @@
 </head>
 
 <body>
-    <div class="page-flipper" onclick="Book.prevPage();">‹</div>
-    <div class="page-flipper" onclick="Book.nextPage();">›</div>
+        <div class="button" onclick="makeMarginSmaller();">Margin-</div>
+        <div class="button" onclick="makeMarginLarger();">Margin+</div>
+        <div class="button" onclick="makeFontSmaller();">Font Size-</div>
+        <div class="button" onclick="makeFontBigger();">Font Size+</div>
+    <div class="page-buttons">
+        <div class="page-button" id="prev-button" onclick="Book.prevPage();"><div>‹</div></div>
+        <div class="page-button" id="next-button" onclick="Book.nextPage();"><div>›</div></div>
+    </div>
     <div id="area"></div>
-
-    <script src="epub.min.js"></script>
+    
+    <script src="epub.js"></script>
     <script src="zip.min.js"></script>
     <script src="findAndReplaceDOMText.js"></script>
 
     <script>
+        
+        var fontSize = 18;
+        var margin = 800;
+
+        function makeFontSmaller() {
+            fontSize -= 1;
+            Book.setStyle('font-size', fontSize + 'px');
+        }
+
+        function makeFontBigger() {
+            fontSize += 1;
+            Book.setStyle('font-size', fontSize + 'px');
+        }
+
+        function makeMarginSmaller() {
+            margin += 50;
+            Book.setStyle('width', margin + 'px');
+        }
+
+        function makeMarginLarger() {
+            margin -= 50;
+            Book.setStyle('width', margin + 'px');
+        }
+
+        EPUBJS.Hooks.register("beforeChapterDisplay").example = function (callback, renderer) {
+
+            console.log(renderer);
+
+            if (callback) callback();
+
+        }
+
         var Book = ePub("republic.epub", {
-            spreads: false
+            restore: true,
+            fixedLayout: false,
+            styles: {
+                'font-family': '"Lora", serif',
+                'font-size': fontSize + 'px',
+                'line-height': '1.5',
+                'color': '#444',
+                'background-color': '#f7f3ee',
+                'width': margin + 'px',
+                'margin': '0 auto'
+            }
         });
+
+        Book.renderer.isForcedSingle = true;
+
         Book.renderTo("area");
+        console.log('book', Book);
 
         Book.on("renderer:chapterDisplayed", function (cfirange) {
             console.log(Book.renderer.render.getDocumentElement());
@@ -89,7 +178,6 @@
                 wrapClass: 'green'
             });
         });
-
     </script>
 
     <style>
@@ -98,4 +186,5 @@
         }
     </style>
 </body>
+
 </html>

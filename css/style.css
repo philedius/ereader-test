@@ -1,26 +1,26 @@
 @import url('https://fonts.googleapis.com/css?family=Lora');
 
-body {
-    font-family: 'Lora', serif;
-    font-size: 18px;
-    line-height: 1.5;
-    text-align: left;
-    color: #333;
-    background-color: #fffff6;
-}
-
 .blue {
-    color: blue;
+    color: rgb(0, 0, 255);
+    background-color: rgba(0, 0, 255, 0.06);
+    border-radius: 2px;  
 }
 
 .orange {
-    color: orange;
+    color: rgb(255, 165, 0);
+    background-color: rgba(255, 165, 0, 0.06);
+    border-radius: 2px; 
 }
 
 .red {
-    color: red;
+    color: rgb(255, 0, 0);
+    background-color: rgba(255, 0, 0, 0.06);
+    border-radius: 2px;
 }
 
 .green {
-    color: green;
+    color: rgb(0, 128, 0);
+    background-color: rgba(0, 128, 0, 0.06);
+    border-radius: 2px;
+
 }
