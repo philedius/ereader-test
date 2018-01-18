@@ -16,6 +16,7 @@
             max-width: 900px;
             height: 90%;
             margin: 0 auto;
+            padding-top: 2rem;
         }
 
         .button {
@@ -47,7 +48,7 @@
             justify-content: center;
             user-select: none;
             cursor: pointer;
-            color: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.09);
             
         }
 
@@ -110,6 +111,30 @@
             Book.setStyle('width', margin + 'px');
         }
 
+        function createSpanNode(className) {
+            let span = document.createElement('span');
+            span.setAttribute('class', className);
+            return span;
+        }
+
+        const characterNodes = {
+            'p': createSpanNode('blue'),
+            'q': createSpanNode('orange'),
+            'd': createSpanNode('red'),
+            'b': createSpanNode('green'),
+            'c': createSpanNode('green'),
+            'g': createSpanNode('green'),
+            'R': createSpanNode('red'),
+            'E': createSpanNode('orange'),
+            'P': createSpanNode('pink'),
+        };
+
+        const characterArray = Object.keys(characterNodes);
+
+        const characterRegex = new RegExp(Object.keys(characterNodes).join("|"), 'g');
+
+        console.log(characterNodes);
+
         EPUBJS.Hooks.register("beforeChapterDisplay").example = function (callback, renderer) {
 
             console.log(Book.renderer.render.getDocumentElement());
@@ -120,28 +145,15 @@
             link.rel = 'stylesheet';
             head.appendChild(link);
             var bookDocument = Book.renderer.render.getDocumentElement();
-            findAndReplaceDOMText(bookDocument, {
-                preset: 'prose',
-                find: /q/g,
-                wrap: 'blue',
-            });
 
             findAndReplaceDOMText(bookDocument, {
                 preset: 'prose',
-                find: /p/g,
-                wrap: 'orange',
-            });
-
-            findAndReplaceDOMText(bookDocument, {
-                preset: 'prose',
-                find: /b/g,
-                wrap: 'red',
-            });
-
-            findAndReplaceDOMText(bookDocument, {
-                preset: 'prose',
-                find: /d/g,
-                wrap: 'green',
+                find: characterRegex,
+                replace: (portion, match) => {
+                    var node = characterNodes[match[0]].cloneNode();
+                    node.innerHTML = match[0];
+                    return node;
+                },
             });
 
             if (callback) callback();
@@ -153,7 +165,7 @@
             styles: {
                 'font-family': '"Lora", serif',
                 // 'font-size': fontSize + 'px',
-                // 'font-size': '100%',
+                'font-size': '16px',
                 'line-height': '1.5',
                 'color': '#444',
                 'background-color': '#fefefe',
@@ -167,44 +179,6 @@
 
         Book.renderTo("area");
         console.log('book', Book);
-
-        // Book.on("renderer:chapterDisplayed", function (cfirange) {
-        //     console.log(Book.renderer.render.getDocumentElement());
-        //     var head = Book.renderer.render.getDocumentElement().getElementsByTagName('head')[0];
-        //     var link = document.createElement('link');
-        //     link.href = '/css/style.css';
-        //     link.type = 'text/css';
-        //     link.rel = 'stylesheet';
-        //     head.appendChild(link);
-        //     var bookDocument = Book.renderer.render.getDocumentElement();
-        //     findAndReplaceDOMText(bookDocument, {
-        //         preset: 'prose',
-        //         find: /q/g,
-        //         wrap: 'span',
-        //         wrapClass: 'blue'
-        //     });
-
-        //     findAndReplaceDOMText(bookDocument, {
-        //         preset: 'prose',
-        //         find: /p/g,
-        //         wrap: 'span',
-        //         wrapClass: 'orange'
-        //     });
-
-        //     findAndReplaceDOMText(bookDocument, {
-        //         preset: 'prose',
-        //         find: /b/g,
-        //         wrap: 'span',
-        //         wrapClass: 'red'
-        //     });
-
-        //     findAndReplaceDOMText(bookDocument, {
-        //         preset: 'prose',
-        //         find: /d/g,
-        //         wrap: 'span',
-        //         wrapClass: 'green'
-        //     });
-        // });
     </script>
 
     <style>
