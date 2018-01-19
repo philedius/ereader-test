@@ -148,6 +148,15 @@
 
             findAndReplaceDOMText(bookDocument, {
                 preset: 'prose',
+                find: /(^\w|\s\w)/gi,
+                replace: (portion, match) => {
+                    var node = createSpanNode('bold');
+                    node.innerHTML = match[0];
+                    return node;
+                },
+            });
+            findAndReplaceDOMText(bookDocument, {
+                preset: 'prose',
                 find: characterRegex,
                 replace: (portion, match) => {
                     var node = characterNodes[match[0]].cloneNode();
@@ -155,6 +164,7 @@
                     return node;
                 },
             });
+
 
             if (callback) callback();
 
@@ -164,8 +174,8 @@
             restore: true,
             styles: {
                 'font-family': '"Lora", serif',
-                // 'font-size': fontSize + 'px',
-                'font-size': '16px',
+                'text-align': 'left',
+                'font-size': '20px',
                 'line-height': '1.5',
                 'color': '#444',
                 'background-color': '#fefefe',
